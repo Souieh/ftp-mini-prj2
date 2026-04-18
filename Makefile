@@ -2,37 +2,50 @@
 #  Makefile  --  University Mini Project
 # ============================================================
 
-PYTHON  = python3
-PIP     = pip3
-OUTDIR  = output
+SYSTEM_PYTHON = python3
+VENV          = .venv
+PYTHON        = $(VENV)/bin/python
+PIP           = $(VENV)/bin/pip
+PYINSTALLER   = $(VENV)/bin/pyinstaller
+OUTDIR        = output
+APP_NAME      = mini_project
 
-.PHONY: all install run part1 part2 clean help
+.PHONY: all venv install install-dev run build clean help
 
 all: help
 
-install:
-	$(PIP) install pandas matplotlib
+$(PYTHON):
+	$(SYSTEM_PYTHON) -m venv $(VENV)
 
-run:
-	$(PYTHON) launcher.py
+venv: $(PYTHON)
+	$(PIP) install --upgrade pip
 
-part1:
+install: venv
+	$(PIP) install -r requirements.txt
+
+install-dev: install
+	$(PIP) install -r requirements-dev.txt
+
+run: install
 	$(PYTHON) phonebook.py
 
-part2:
-	$(PYTHON) patient_analysis.py
+
+build: install-dev
+	$(PYINSTALLER) --clean phonebook.spec
+	@echo "[OK] Executable available at dist/$(APP_NAME)"
 
 clean:
-	rm -rf $(OUTDIR)
-	@echo "[OK] output/ directory removed."
+	rm -rf $(OUTDIR) build dist
+	@echo "[OK] output/, build/, and dist/ directories removed."
 
 help:
 	@echo ""
-	@echo "  University Mini Project  --  Makefile"
+	@echo "  University Mini Project  --  Phonebook"
 	@echo "  ----------------------------------------"
-	@echo "  make install   Install pandas + matplotlib"
-	@echo "  make run       Start the launcher"
-	@echo "  make part1     Run the Phonebook directly"
-	@echo "  make part2     Run Patient Analysis directly"
-	@echo "  make clean     Delete the output/ folder"
+	@echo "  make venv        Create .venv and upgrade pip"
+	@echo "  make install     Install runtime dependencies"
+	@echo "  make install-dev Install runtime + build dependencies"
+	@echo "  make run         Start the Phonebook"
+	@echo "  make build       Build executable with PyInstaller"
+	@echo "  make clean       Delete output/, build/, and dist/"
 	@echo ""

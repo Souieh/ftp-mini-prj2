@@ -12,6 +12,9 @@ mini_project/
 +-- patient_analysis.py    Part 2: Patient data analysis
 +-- ui.py                  Shared ASCII UI toolkit
 +-- Makefile               Shortcuts for common tasks
++-- requirements.txt       Runtime dependencies
++-- requirements-dev.txt   Dev/build dependencies
++-- launcher.spec          PyInstaller build configuration
 +-- README.md              This file
 
 output/                    Created automatically at runtime
@@ -28,18 +31,32 @@ output/                    Created automatically at runtime
 ## Requirements
 
 - Python 3.8+
-- pandas, matplotlib  (Part 2 only)
+- `venv` module (included with standard Python)
+- Runtime dependencies in `requirements.txt`
+
+## Setup with Virtual Environment (recommended)
+
+Linux / macOS:
 
 ```
-pip install pandas matplotlib
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
-Or use the Makefile:
+Windows PowerShell:
+
+```
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+Or use the Makefile (Linux / macOS):
 
 ```
 make install
 ```
-
 ## How to Run
 
 ### Launcher (recommended)
@@ -64,8 +81,26 @@ python patient_analysis.py
 make run      -- Start the launcher
 make part1    -- Run the phonebook directly
 make part2    -- Run the patient analysis directly
-make clean    -- Delete the output/ folder
+make build    -- Build executable with PyInstaller
+make clean    -- Delete output/, build/, and dist/
 ```
+
+## Build Executable (PyInstaller)
+
+Install build dependencies and create the executable:
+
+```
+make build
+```
+
+Manual equivalent:
+
+```
+pip install -r requirements-dev.txt
+pyinstaller --clean launcher.spec
+```
+
+The executable is generated in `dist/mini_project`.
 
 ## Part 1 -- Phonebook Application
 
